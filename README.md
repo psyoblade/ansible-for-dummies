@@ -13,9 +13,9 @@
 
 
 
-## 1 환경 구성
+## 1. 환경 구성
 
-### 1-1 버추얼박스 + 센트OS 구성
+### 1-1. 버추얼박스 + 센트OS 구성
 * [버추얼박스](https://www.virtualbox.org/wiki/Downloads) 사이트에서 다운로드 후 설치
 * [CentOS](http://isoredirect.centos.org/centos/8/isos/x86_64/) 사이트에서 ISO 파일 가운데 Minimal 파일을 다운로드합니다
   - KDump 는 용량상 제외하고, Disk 설정은 기본 설정인 8GB 그대로 지정합니다
@@ -60,7 +60,7 @@ ping 192.168.0.13
 ```
 
 
-### 1-2 앤서블 설치
+### 1-2. 앤서블 설치
 * 앤서블을 yum 을 통해 설치합니다
   - Mirror 호스트를 찾을 수 없으므로 DNS 설정을 먼저 해야합니다
   - KT 공개 DNS 서버인 168.126.63.1~2 서버를 설정합니다 (/etc/resolv.conf)
@@ -98,7 +98,7 @@ bash> yum install ansible -y  # 앤서블 코어를 설치합니다
 ```
 
 
-### 1-3 앤서블 명령어 테스트
+### 1-3. 앤서블 명령어 테스트
 * 호스트 관리 파일 (/etc/ansible/hosts)
 ```bash
 bash> cat /etc/ansible/hosts  # 아래의 nginx 는 해당 섹션의 그룹을 지정하는 키워드입니다
@@ -117,7 +117,7 @@ bash> ansible all -m ping -k  # -k 옵션으로 skip exchange public key
   - 필요에 따라 기본설정을 확인하고 변경해서 사용할 수 있습니다
 
 
-### 1-4 앤서블 주요 파라메터
+### 1-4. 앤서블 주요 파라메터
 ```bash
 bash> ansible -i (--inventory-file) <file-name>  # /etc/ansible/hosts 파일 대신 다른 파일을 지정
 ansible all -i ./test -m ping -k
@@ -136,9 +136,9 @@ ansible all -i ./teset -m ping -k --list-hosts
 ```
 
 
-## 2 다수의 시스템에 작업 수행하기
+## 2. 다수의 시스템에 작업 수행하기
 
-### 2-1 쉘 모듈
+### 2-1. 쉘 모듈
 ```bash
 bash> ansible nginx -m shell -a "uptime" -k  # 각 노드의 업타임 확인하기
 
@@ -155,7 +155,7 @@ ansible nginx -m shell -a "systemctl status httpd" -k  # 명령어를 통해서 
 ```
 
 
-### 2-2 플레이북 기초
+### 2-2. 플레이북 기초
 > 대량의 서버에 항상 멱등하게 동작하는 명령을 수행할 수 있는 YAML 파일을 이용한 기능
 * 로컬호스트의 호스트 파일에 lastnode 라는 섹션을 추가하는 예제를 실습합니다
 ```bash
@@ -175,7 +175,7 @@ bash> cat add-host.yml
 bash> ansible lastnode -m ping -k  # 방금 추가한 노드만 선택이 가능한 지 테스트합니다
 ```
 
-### 2-3 플레이북 활용한 서비스 설치
+### 2-3. 플레이북 활용한 서비스 설치
 * 플레이북 설치를 위한 YAML 파일을 생성합니다
 ```bash
 bash> cat add-ninx.yml
@@ -210,68 +210,3 @@ bash> cat add-nginx.yml
 ...
 ```
 
-
-
-
-
-### 1.2 노드 패키지 업데이트 및 설치
-> apt-get update 및 tree 프로그램을 설치합니다
-* 패키지 업데이트 및 설치
-```bash
-bash> ansible all -u root --become -a "apt update"
-192.168.100.11 | CHANGED | rc=0 >>
-Hit:1 http://security.ubuntu.com/ubuntu xenial-security InRelease
-Hit:2 http://archive.ubuntu.com/ubuntu xenial InRelease
-Hit:3 http://archive.ubuntu.com/ubuntu xenial-updates InRelease
-Hit:4 http://archive.ubuntu.com/ubuntu xenial-backports InRelease
-Reading package lists...
-Building dependency tree...
-Reading state information...
-All packages are up to date.
-
-
-bash> ansible all -u root --become -a "apt install tree"
-192.168.100.10 | CHANGED | rc=0 >>
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following NEW packages will be installed:
-  tree
-```
-* 설치된 패키지를 실행
-```bash
-bash> ansible manager -a "/usr/bin/tree -a -L 2"
-192.168.100.10 | CHANGED | rc=0 >>
-.
-├── .ansible
-│   └── tmp
-├── .bash_history
-├── .bash_logout
-├── .bashrc
-├── .cache
-│   └── motd.legal-displayed
-├── .profile
-├── .ssh
-│   ├── authorized_keys
-│   ├── id_rsa
-│   └── id_rsa.pub
-└── .sudo_as_admin_successful
-
-4 directories, 9 files
-```
-
-
-
-## 9. 트러블슈팅
-* Host Unreachable
-  - 앤서블은 기본적으로 ssh 패스워드 인증 없이 접속가능하도록, publickey 가 연동되어 있어야만 합니다
-```bash
-bash>
-ansible all -m ping -u vagrant
-
-192.168.100.12 | UNREACHABLE! => {
-    "changed": false,
-    "msg": "Failed to connect to the host via ssh: psyoblade@192.168.100.12: Permission denied (publickey).",
-    "unreachable": true
-}
-```
