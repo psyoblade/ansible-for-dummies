@@ -1,0 +1,11 @@
+---
+- name: ansible_vim
+  hosts: localhost
+
+  tasks:
+    - name: add ansible host
+      blockinfile:
+        path: /etc/ansible/hosts
+        block: |
+          [lastnode]
+          192.168.0.13
