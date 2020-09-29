@@ -210,3 +210,24 @@ bash> cat add-nginx.yml
 ...
 ```
 
+
+## 3. 유용한 팁
+
+### 3-1. 앤서블 빔 플러그인
+* [Ansible-Vim](https://github.com/pearofducks/ansible-vim) 설치
+  - [Vim-Plugin](https://github.com/junegunn/vim-plug) 페이지를 통해 플러그인 먼저 설치
+```bash
+bash> yum install vim-enhanced -y  # 해당 플러그인은 추가 패키지 설치가 필요함
+yum install git -y
+
+vim> :PlugInstall  # 명령을 수행하면 추가된 플러그인이 설치됩니다
+```
+* 디버깅 창에서 이쁘게 출력하기 (/etc/ansible/ansible.cfg)
+```bash
+bash> cat /etc/ansible/ansible.cfg
+...
+stdout_callback = debug
+...
+```
+
+
